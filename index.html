@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мультимедийное веб-приложение</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --text-color: #333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .app-description {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background-color: var(--dark-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        /* Аудио/Видео стили */
+        .media-container {
+            margin-bottom: 15px;
+        }
+
+        .media-player {
+            width: 100%;
+            border-radius: var(--border-radius);
+            background-color: #000;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .volume-control {
+            width: 100px;
+        }
+
+        /* Canvas стили */
+        .canvas-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        canvas {
+            border: 2px solid var(--dark-color);
+            border-radius: var(--border-radius);
+            background-color: #fff;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .animation-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Обработка изображений */
+        .image-upload-container {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            margin: 10px auto;
+            display: none;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .filter-control {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-control label {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .filter-control input {
+            width: 100%;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: white;
+        }
+
+        .tab-container {
+            margin-top: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border: none;
+            cursor: pointer;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 15px;
+            background-color: white;
+            border-radius: 0 var(--border-radius) var(--border-radius) var(--border-radius);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-label:hover {
+            background-color: var(--dark-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Мультимедийное веб-приложение</h1>
+            <p class="app-description">Аудио/Видео воспроизведение, Canvas графика и обработка изображений</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Аудио/Видео раздел -->
+            <div class="card">
+                <h2>Аудио и Видео</h2>
+                
+                <div class="tab-container">
+                    <div class="tabs">
+                        <button class="tab active" data-tab="audio-tab">Аудио</button>
+                        <button class="tab" data-tab="video-tab">Видео</button>
+                    </div>
+                    
+                    <div id="audio-tab" class="tab-content active">
+                        <div class="media-container">
+                            <audio id="audioPlayer" class="media-player" controls>
+                                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
+                        </div>
+                        
+                        <div class="controls">
+                            <button id="playAudio" class="btn">Воспроизведение</button>
+                            <button id="pauseAudio" class="btn">Пауза</button>
+                            <button id="stopAudio" class="btn">Стоп</button>
+                            
+                            <div class="control-group">
+                                <label for="volumeAudio">Громкость:</label>
+                                <input type="range" id="volumeAudio" class="volume-control" min="0" max="1" step="0.1" value="1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="video-tab" class="tab-content">
+                        <div class="media-container">
+                            <video id="videoPlayer" class="media-player" controls width="100%">
+                                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                                Ваш браузер не поддерживает видео элемент.
+                            </video>
+                        </div>
+                        
+                        <div class="controls">
+                            <button id="playVideo" class="btn">Воспроизведение</button>
+                            <button id="pauseVideo" class="btn">Пауза</button>
+                            <button id="stopVideo" class="btn">Стоп</button>
+                            
+                            <div class="control-group">
+                                <label for="volumeVideo">Громкость:</label>
+                                <input type="range" id="volumeVideo" class="volume-control" min="0" max="1" step="0.1" value="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas графика и анимация -->
+            <div class="card">
+                <h2>Графика и Анимация</h2>
+                
+                <div class="canvas-container">
+                    <canvas id="animationCanvas" width="400" height="300"></canvas>
+                </div>
+                
+                <div class="animation-controls">
+                    <button id="startAnimation" class="btn btn-success">Запуск анимации</button>
+                    <button id="stopAnimation" class="btn btn-danger">Остановка</button>
+                    <button id="changeColor" class="btn">Сменить цвет</button>
+                    <button id="addShape" class="btn">Добавить фигуру</button>
+                </div>
+                
+                <div class="control-group" style="margin-top: 10px;">
+                    <label for="animationSpeed">Скорость анимации:</label>
+                    <input type="range" id="animationSpeed" min="1" max="10" value="5">
+                </div>
+            </div>
+
+            <!-- Обработка изображений -->
+            <div class="card">
+                <h2>Работа с Изображениями</h2>
+                
+                <div class="image-upload-container">
+                    <input type="file" id="imageUpload" class="file-input" accept="image/*">
+                    <label for="imageUpload" class="file-label">Выберите изображение</label>
+                    
+                    <div class="canvas-container">
+                        <canvas id="imageCanvas" width="400" height="300"></canvas>
+                    </div>
+                    
+                    <img id="imagePreview" class="image-preview" alt="Предпросмотр">
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-control">
+                        <label for="brightness">Яркость:</label>
+                        <input type="range" id="brightness" min="0" max="200" value="100">
+                    </div>
+                    
+                    <div class="filter-control">
+                        <label for="contrast">Контрастность:</label>
+                        <input type="range" id="contrast" min="0" max="200" value="100">
+                    </div>
+                    
+                    <div class="filter-control">
+                        <label for="saturation">Насыщенность:</label>
+                        <input type="range" id="saturation" min="0" max="200" value="100">
+                    </div>
+                    
+                    <div class="filter-control">
+                        <label for="hue">Оттенок:</label>
+                        <input type="range" id="hue" min="0" max="360" value="0">
+                    </div>
+                </div>
+                
+                <div class="controls" style="margin-top: 15px;">
+                    <button id="resetFilters" class="btn">Сбросить фильтры</button>
+                    <button id="cropImage" class="btn">Обрезать</button>
+                    <button id="saveImage" class="btn btn-success">Сохранить изображение</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Мультимедийное веб-приложение &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // ========== АУДИО/ВИДЕО ФУНКЦИОНАЛЬНОСТЬ ==========
+
+        // Элементы для аудио
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playAudioBtn = document.getElementById('playAudio');
+        const pauseAudioBtn = document.getElementById('pauseAudio');
+        const stopAudioBtn = document.getElementById('stopAudio');
+        const volumeAudioControl = document.getElementById('volumeAudio');
+
+        // Элементы для видео
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playVideoBtn = document.getElementById('playVideo');
+        const pauseVideoBtn = document.getElementById('pauseVideo');
+        const stopVideoBtn = document.getElementById('stopVideo');
+        const volumeVideoControl = document.getElementById('volumeVideo');
+
+        // Управление аудио
+        playAudioBtn.addEventListener('click', () => {
+            audioPlayer.play();
+        });
+
+        pauseAudioBtn.addEventListener('click', () => {
+            audioPlayer.pause();
+        });
+
+        stopAudioBtn.addEventListener('click', () => {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+        });
+
+        volumeAudioControl.addEventListener('input', () => {
+            audioPlayer.volume = volumeAudioControl.value;
+        });
+
+        // Управление видео
+        playVideoBtn.addEventListener('click', () => {
+            videoPlayer.play();
+        });
+
+        pauseVideoBtn.addEventListener('click', () => {
+            videoPlayer.pause();
+        });
+
+        stopVideoBtn.addEventListener('click', () => {
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+        });
+
+        volumeVideoControl.addEventListener('input', () => {
+            videoPlayer.volume = volumeVideoControl.value;
+        });
+
+        // Табы для переключения между аудио и видео
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Убираем активный класс у всех табов и контента
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Добавляем активный класс к выбранному табу и контенту
+                tab.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // ========== CANVAS АНИМАЦИЯ ==========
+
+        const animationCanvas = document.getElementById('animationCanvas');
+        const animationCtx = animationCanvas.getContext('2d');
+        const startAnimationBtn = document.getElementById('startAnimation');
+        const stopAnimationBtn = document.getElementById('stopAnimation');
+        const changeColorBtn = document.getElementById('changeColor');
+        const addShapeBtn = document.getElementById('addShape');
+        const animationSpeedControl = document.getElementById('animationSpeed');
+
+        let animationId = null;
+        let shapes = [];
+        let hue = 0;
+
+        // Класс для создания анимированных фигур
+        class Shape {
+            constructor(x, y, size, speedX, speedY, color) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+                this.color = color;
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Отскок от границ
+                if (this.x <= 0 || this.x >= animationCanvas.width) {
+                    this.speedX = -this.speedX;
+                }
+                
+                if (this.y <= 0 || this.y >= animationCanvas.height) {
+                    this.speedY = -this.speedY;
+                }
+            }
+            
+            draw() {
+                animationCtx.fillStyle = this.color;
+                animationCtx.beginPath();
+                animationCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                animationCtx.fill();
+            }
+        }
+
+        // Создаем начальные фигуры
+        function createInitialShapes() {
+            shapes = [];
+            for (let i = 0; i < 5; i++) {
+                const size = Math.random() * 20 + 10;
+                const x = Math.random() * (animationCanvas.width - size * 2) + size;
+                const y = Math.random() * (animationCanvas.height - size * 2) + size;
+                const speedX = (Math.random() - 0.5) * 4;
+                const speedY = (Math.random() - 0.5) * 4;
+                const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                
+                shapes.push(new Shape(x, y, size, speedX, speedY, color));
+            }
+        }
+
+        // Функция анимации
+        function animate() {
+            // Очищаем canvas
+            animationCtx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            animationCtx.fillRect(0, 0, animationCanvas.width, animationCanvas.height);
+            
+            // Обновляем и рисуем все фигуры
+            shapes.forEach(shape => {
+                shape.update();
+                shape.draw();
+            });
+            
+            // Продолжаем анимацию
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Обработчики событий для анимации
+        startAnimationBtn.addEventListener('click', () => {
+            if (!animationId) {
+                createInitialShapes();
+                animate();
+            }
+        });
+
+        stopAnimationBtn.addEventListener('click', () => {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        });
+
+        changeColorBtn.addEventListener('click', () => {
+            shapes.forEach(shape => {
+                shape.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            });
+        });
+
+        addShapeBtn.addEventListener('click', () => {
+            const size = Math.random() * 20 + 10;
+            const x = Math.random() * (animationCanvas.width - size * 2) + size;
+            const y = Math.random() * (animationCanvas.height - size * 2) + size;
+            const speedX = (Math.random() - 0.5) * 4;
+            const speedY = (Math.random() - 0.5) * 4;
+            const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            
+            shapes.push(new Shape(x, y, size, speedX, speedY, color));
+        });
+
+        // ========== ОБРАБОТКА ИЗОБРАЖЕНИЙ ==========
+
+        const imageUpload = document.getElementById('imageUpload');
+        const imageCanvas = document.getElementById('imageCanvas');
+        const imageCtx = imageCanvas.getContext('2d');
+        const imagePreview = document.getElementById('imagePreview');
+        const brightnessControl = document.getElementById('brightness');
+        const contrastControl = document.getElementById('contrast');
+        const saturationControl = document.getElementById('saturation');
+        const hueControl = document.getElementById('hue');
+        const resetFiltersBtn = document.getElementById('resetFilters');
+        const cropImageBtn = document.getElementById('cropImage');
+        const saveImageBtn = document.getElementById('saveImage');
+
+        let originalImage = null;
+
+        // Загрузка изображения
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    originalImage = img;
+                    
+                    // Отображаем превью
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                    
+                    // Рисуем изображение на canvas
+                    drawImageToCanvas(img);
+                    
+                    // Сбрасываем фильтры
+                    resetFilters();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Рисуем изображение на canvas
+        function drawImageToCanvas(img) {
+            // Очищаем canvas
+            imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+            
+            // Рассчитываем размеры для сохранения пропорций
+            const aspectRatio = img.width / img.height;
+            let drawWidth = imageCanvas.width;
+            let drawHeight = imageCanvas.height;
+            
+            if (aspectRatio > 1) {
+                drawHeight = drawWidth / aspectRatio;
+            } else {
+                drawWidth = drawHeight * aspectRatio;
+            }
+            
+            const x = (imageCanvas.width - drawWidth) / 2;
+            const y = (imageCanvas.height - drawHeight) / 2;
+            
+            imageCtx.drawImage(img, x, y, drawWidth, drawHeight);
+        }
+
+        // Применяем фильтры к изображению
+        function applyFilters() {
+            if (!originalImage) return;
+            
+            const brightness = brightnessControl.value;
+            const contrast = contrastControl.value;
+            const saturation = saturationControl.value;
+            const hue = hueControl.value;
+            
+            // Очищаем canvas
+            imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+            
+            // Применяем фильтры
+            imageCtx.filter = `
+                brightness(${brightness}%)
+                contrast(${contrast}%)
+                saturate(${saturation}%)
+                hue-rotate(${hue}deg)
+            `;
+            
+            // Рисуем изображение с фильтрами
+            drawImageToCanvas(originalImage);
+            
+            // Сбрасываем фильтр для следующих операций
+            imageCtx.filter = 'none';
+        }
+
+        // Сброс фильтров
+        function resetFilters() {
+            brightnessControl.value = 100;
+            contrastControl.value = 100;
+            saturationControl.value = 100;
+            hueControl.value = 0;
+            applyFilters();
+        }
+
+        // Обрезка изображения
+        function cropImage() {
+            if (!originalImage) return;
+            
+            // Простая обрезка - центральная часть
+            const cropWidth = imageCanvas.width * 0.7;
+            const cropHeight = imageCanvas.height * 0.7;
+            const cropX = (imageCanvas.width - cropWidth) / 2;
+            const cropY = (imageCanvas.height - cropHeight) / 2;
+            
+            // Создаем новый canvas для обрезанного изображения
+            const croppedCanvas = document.createElement('canvas');
+            croppedCanvas.width = cropWidth;
+            croppedCanvas.height = cropHeight;
+            const croppedCtx = croppedCanvas.getContext('2d');
+            
+            // Рисуем обрезанную часть
+            croppedCtx.drawImage(
+                imageCanvas, 
+                cropX, cropY, cropWidth, cropHeight,
+                0, 0, cropWidth, cropHeight
+            );
+            
+            // Заменяем оригинальное изображение обрезанным
+            const croppedImage = new Image();
+            croppedImage.onload = function() {
+                originalImage = croppedImage;
+                drawImageToCanvas(originalImage);
+                applyFilters();
+            };
+            croppedImage.src = croppedCanvas.toDataURL();
+        }
+
+        // Сохранение изображения
+        function saveImage() {
+            if (!originalImage) return;
+            
+            const link = document.createElement('a');
+            link.download = 'обработанное-изображение.png';
+            link.href = imageCanvas.toDataURL();
+            link.click();
+        }
+
+        // Назначаем обработчики событий для элементов управления изображениями
+        brightnessControl.addEventListener('input', applyFilters);
+        contrastControl.addEventListener('input', applyFilters);
+        saturationControl.addEventListener('input', applyFilters);
+        hueControl.addEventListener('input', applyFilters);
+        resetFiltersBtn.addEventListener('click', resetFilters);
+        cropImageBtn.addEventListener('click', cropImage);
+        saveImageBtn.addEventListener('click', saveImage);
+
+        // Инициализация приложения
+        createInitialShapes();
+    </script>
+</body>
+</html>
